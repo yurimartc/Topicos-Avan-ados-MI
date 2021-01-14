@@ -31,6 +31,7 @@ def dantzit_relaxado(n, c, p, w):
         if c_atual - w[i] >= 0: #Se tiver capacidade para colocar o item i
             c_atual = c_atual - w[i] #Atualizo a capacidade atual
             x_solucao[i] = 1 #Atualizo vetor solução
+            
     return x_solucao, sum(x_solucao*p) 
 
 print(dantzit_relaxado(n, c, p, w))
