@@ -45,13 +45,22 @@ def read_instances_knapsack(path):
 
     return n, c, p, w
 
+solucoes = {}
 for dirpath, dirs, files in os.walk(local):
     for file in files:        
-        if file.split('_')[0] == '200':
-            local_file = local + '//' + file.split('_')[0] + '//' + file            
-            n, c, p, w = read_instances_knapsack(local_file)
-            print(f"Instancia -> {file}")
-            print(f"{dantzit_viavel(n, c, p, w)} ----> dantzit_viavel")
-            print(f"{dantzit_relaxado(n, c, p, w)} ----> dantzit_relaxado")
-            print(f"{solver_kp_problem(n, c, p, w)} ----> solver_kp_problem")
+        local_file = local + '//' + file.split('_')[0] + '//' + file            
+        n, c, p, w = read_instances_knapsack(local_file)
+        solucoes[file] = {
+            'file': file,
+            'n': n,
+            'c': c,
+            'sol_dantzit_viavel': dantzit_viavel(n, c, p, w),
+            'sol_dantzit_relaxado': dantzit_relaxado(n, c, p, w),
+            'sol_gurobi_kp_problem': solver_kp_problem(n, c, p, w)
+        }
 
+df_solucoes = pd.DataFrame()
+for s in solucoes:
+    df_solucoes = pd.concat([df_solucoes, pd.DataFrame([solucoes[s]])], ignore_index=True)
+
+df_solucoes.to_excel('Trabalho 1 - Problema Mochila//solucoes_instancias.xlsx')
