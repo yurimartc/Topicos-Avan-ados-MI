@@ -9,8 +9,6 @@ import pandas as pd
 
 local = 'Trabalho 1 - Problema Mochila//instances_knapsack'
 
-path = 'D://Yuri Drive//UFC//Topicos Avançados MI//Trabalho 1 - Problema Mochila//instances_knapsack//10//10_100_1.txt'
-
 def read_instances_knapsack(path):
     """
     Retorna as variaveis da instancias do knapsack problem.
@@ -45,12 +43,13 @@ def read_instances_knapsack(path):
 
     return n, c, p, w
 
-solucoes = {}
-for dirpath, dirs, files in os.walk(local):
+solucoes = {} #Criando dicionário de soluções
+for dirpath, dirs, files in os.walk(local): #Percorrendo todos os arquivos dentro do local
     for file in files:        
         local_file = local + '//' + file.split('_')[0] + '//' + file            
-        n, c, p, w = read_instances_knapsack(local_file)
-        solucoes[file] = {
+        n, c, p, w = read_instances_knapsack(local_file) #Lendo as instancias
+        #Alimentando o dicionário de soluções
+        solucoes[file] = { 
             'file': file,
             'n': n,
             'c': c,
@@ -59,8 +58,11 @@ for dirpath, dirs, files in os.walk(local):
             'sol_gurobi_kp_problem': solver_kp_problem(n, c, p, w)
         }
 
-df_solucoes = pd.DataFrame()
+df_solucoes = pd.DataFrame() #DataFrame das soluções
+
+#Concatenando cada solução no DataFrame
 for s in solucoes:
     df_solucoes = pd.concat([df_solucoes, pd.DataFrame([solucoes[s]])], ignore_index=True)
 
+#Exportando as soluções para excel
 df_solucoes.to_excel('Trabalho 1 - Problema Mochila//solucoes_instancias.xlsx')
