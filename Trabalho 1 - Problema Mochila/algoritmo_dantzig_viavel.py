@@ -1,13 +1,13 @@
 #Bibliotecas necessárias
 import numpy as np
-
+"""
 # ==== Dados exemplo ====
 n = 7 #Tamanho da mochila
 p = [6, 5, 8, 9, 6, 7, 3] #Matriz de pesos
 w = [2, 3, 6, 7, 5, 9, 3] #Matriz da capacidade
 c = 9 #Capacidade total da mochila
-
-def dantzit_relaxado(n, c, p, w):
+"""
+def dantzit_viavel(n, c, p, w):
     """
     Retorna o vetor solução e valor da função objetivo do problema da mochila viavel.
 
@@ -30,6 +30,6 @@ def dantzit_relaxado(n, c, p, w):
         if c_atual - w[i] >= 0: #Se tiver capacidade para colocar o item i
             c_atual = c_atual - w[i] #Atualizo a capacidade atual
             x_solucao[i] = 1 #Atualizo vetor solução
-    return x_solucao, sum(x_solucao*p)
+    return sum(x_solucao*p)
 
-print(dantzit_relaxado(n, c, p, w))
+#print(dantzit_viavel(n, c, p, w))
