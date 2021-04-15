@@ -28,12 +28,12 @@ function standardFormulation(inst)
 
 
   ### variables ###
-  @variable(model, y_p[t=1:NT], Bin)
-  @variable(model, y_r[t=1:NT], Bin)
-  @variable(model,z_sp[i=1:NT, j=1:NT] >= 0)
-  @variable(model,z_sr[i=1:NT, j=1:NT] >= 0)
-  @variable(model,z_r[i=1:NT, j=1:NT] >= 0)
-  @variable(model,l[i=1:NT])
+  @variable(model, y_p[t=1:NT], Bin) # números de items manufaturados no período t
+  @variable(model, y_r[t=1:NT], Bin) # números de items remanufaturados no período t
+  @variable(model,z_sp[i=1:NT, j=1:NT] >= 0) # Fração da demanda que será produzina no periodo i até j
+  @variable(model,z_sr[i=1:NT, j=1:NT] >= 0) # Fração da demanda que será remanufaturada no periodo i até j
+  @variable(model,z_r[i=1:NT, j=1:NT] >= 0) # Fração dos itens que serão retornadaos no periodo i até j e que será remanufaturada no periodo j
+  @variable(model,l[i=1:NT]) # Fração dos itens que serão retornadaos no periodo i até NT
 
   ### objective function ###
 #@objective(model, Min, sum(inst.F[t]*y_p[t] + inst.FR[t]*y_r[t] + l[t]*(sum(inst.HR[j]*sum(inst.D[k] for k in i:j) for j in t:NT)) for t in 1:NT) + sum(z_sp[i, j]*(inst.P[i]*sum(inst.D[k] for k in i:j) + sum(inst.H[t]*sum(inst.D[k] for k in t+1:j) for t in i:j-1)) +
@@ -51,20 +51,31 @@ function standardFormulation(inst)
   ### constraints ###
   #Adicionando constantes
 
+  #flow conservation constraints
+
   @constraint(model, conservasion1, sum(z_sp[1, j] + z_sr[1, j] for j in 1:NT) == 1) #10
 
   @constraint(model, conservasion2[t=2:NT], sum(z_sp[i, t-1] + z_sr[i, t-1] for i in 1:NT) == sum(z_sp[t, j] + z_sr[t, j] for j in 1:NT )) #11
+
+  #setup enforcing constraints
 
   @constraint(model, setup_p[t=1:NT], y_p[t] >= sum(z_sp[t, j] for j in 1:NT)) #12
 
   @constraint(model, setup_r[t=1:NT], y_r[t] >= sum(z_sr[t, j] for j in 1:NT)) #13
 
+  ## The shortest path constraints for the returned items
+
+  #being flow conservation constraints
   @constraint(model, sp_conservasion1, sum(z_r[1, j] for j in 1:NT) + l[1] == 1) #14
 
   @constraint(model, sp_conservasion2[t=2:NT], sum(z_r[i, t-1] for i in 1:t-1) == sum(z_r[t, j] for j in 1:NT) + l[t]) #15
 
+  #setup enforcing constraints
+
   @constraint(model, setupEnforcing[t=1:NT], sum(z_r[i, t] for i in 1:t) <= y_r[t]) #16
 
+  #link the z r with the z sr variables
+  
   @constraint(model, linkZvar[t=1:NT], sum(z_r[i, t] * sum(inst.R[p] for p in i:t) for i in 1:t) == sum(z_sr[t, j]* sum(inst.D[k] for k in t:j) for j in t:NT)) #17
 
 
