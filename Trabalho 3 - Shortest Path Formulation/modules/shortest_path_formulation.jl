@@ -6,7 +6,7 @@ push!(LOAD_PATH, "/home/yurimartins/Documentos/UFC/Topicos Avançados MI/Trabalh
 import Data
 import Formulations
 
-instanceFile = "/home/yurimartins/Documentos/UFC/Topicos Avançados MI/Trabalho 3/instances/sifaleras/52_1.txt"
+instanceFile = "Trabalho 3 - Shortest Path Formulation/instances/sifaleras/52_1.txt"
 
 inst = Data.readData(instanceFile)
 

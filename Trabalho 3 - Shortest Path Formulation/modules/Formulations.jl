@@ -75,7 +75,7 @@ function standardFormulation(inst)
   @constraint(model, setupEnforcing[t=1:NT], sum(z_r[i, t] for i in 1:t) <= y_r[t]) #16
 
   #link the z r with the z sr variables
-  
+
   @constraint(model, linkZvar[t=1:NT], sum(z_r[i, t] * sum(inst.R[p] for p in i:t) for i in 1:t) == sum(z_sr[t, j]* sum(inst.D[k] for k in t:j) for j in t:NT)) #17
 
 
@@ -94,7 +94,7 @@ function standardFormulation(inst)
 
   ### get solutions ###
   bestsol = objective_value(model)
-
+  print("Solucão: ", bestsol)
   time = solve_time(model)
 
 
